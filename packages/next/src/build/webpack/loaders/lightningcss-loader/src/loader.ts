@@ -1,12 +1,7 @@
 import type { LoaderContext } from 'webpack'
 import type { ILightningCssLoaderConfig, VisitorOptions } from './interface'
 import { ECacheKey } from './interface'
-import {
-  composeVisitors,
-  transform as transformCss,
-  type Url,
-  type Visitor,
-} from 'lightningcss'
+import { composeVisitors, type Url, type Visitor } from 'lightningcss'
 import { getTargets } from './utils'
 import {
   getImportCode,
@@ -304,7 +299,11 @@ export async function LightningCssLoader(
       ),
     })
   }
-  const transform = implementation?.transformCss ?? transformCss
+  const { loadBindings } = require('next/dist/build/swc')
+
+  const transform =
+    implementation?.transformCss ??
+    (await loadBindings()).css.lightning.transform
 
   const replacedUrls = new Map<number, string>()
   const icssReplacedUrls = new Map<number, string>()
